@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthState } from "../types";
+
+export interface AuthState {
+  authenticatedEmail: string;
+  authToken: string;
+  authenticatedName: string;
+  isAuthenticated: boolean;
+}
 
 const initialState: AuthState = {
-  email: "",
-  password: "",
-  name: "",
+  authenticatedEmail: "",
+  authToken: "",
+  authenticatedName: "",
   isAuthenticated: false,
 };
 
@@ -12,29 +18,43 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setEmail: (state, action: PayloadAction<string>) => {
-      state.email = action.payload;
+    setAuthenticatedEmail: (state, action: PayloadAction<string>) => {
+      state.authenticatedEmail = action.payload;
     },
-    setPassword: (state, action: PayloadAction<string>) => {
-      state.password = action.payload;
+    setAuthToken: (state, action: PayloadAction<string>) => {
+      state.authToken = action.payload;
+      state.isAuthenticated = true;
     },
-    setName: (state, action: PayloadAction<string>) => {
-      state.name = action.payload;
+    setAuthenticatedName: (state, action: PayloadAction<string>) => {
+      state.authenticatedName = action.payload;
     },
     setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
+    clearAuth: (state) => {
+      state.authenticatedEmail = "";
+      state.authToken = "";
+      state.authenticatedName = "";
+      state.isAuthenticated = false;
+    },
   },
 });
 
-export const selectEmail = (state: AuthState) => state.email;
-export const selectPassword = (state: AuthState) => state.password;
-export const selectName = (state: AuthState) => state.name;
+export const selectAuthenticatedEmail = (state: AuthState) =>
+  state.authenticatedEmail;
+export const selectAuthToken = (state: AuthState) => state.authToken;
+export const selectAuthenticatedName = (state: AuthState) =>
+  state.authenticatedName;
 
 export const selectIsAuthenticated = (state: AuthState) =>
   state.isAuthenticated;
 
-export const { setEmail, setPassword, setName, setIsAuthenticated } =
-  authSlice.actions;
+export const {
+  setAuthenticatedEmail,
+  setAuthToken,
+  setAuthenticatedName,
+  setIsAuthenticated,
+  clearAuth,
+} = authSlice.actions;
 
 export default authSlice.reducer;

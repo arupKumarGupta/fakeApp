@@ -3,14 +3,41 @@ import Input from "../components/Input";
 import { useDispatch, useSelector } from "react-redux";
 import { closeModal, openModal } from "../redux/uiSlice";
 import { RootState } from "../redux/store";
-import { setEmail, setName, setPassword } from "../redux/FormSlice";
-import { ChangeEvent } from "react";
+import {
+  setEmail,
+  setFormError,
+  setLoading,
+  setName,
+  setPassword,
+} from "../redux/FormSlice";
+import { ChangeEvent, useCallback } from "react";
+import { register } from "../services/HttpsService";
+import { setAuthToken, setAuthenticatedEmail } from "../redux/authSlice";
+
+/**
+ * Intentionally left out ui validations, validations are done in SignIn.
+ */
 
 const Register = () => {
   const dispatch = useDispatch();
-  const { email, password, name } = useSelector(
+  const { email, password, name, formError, isLoading } = useSelector(
     (state: RootState) => state.form
   );
+
+  const handleSignup = useCallback(async () => {
+    try {
+      dispatch(setLoading(true));
+      const { data } = await register(email, password);
+      dispatch(setAuthenticatedEmail(email));
+      dispatch(setAuthToken(data.token));
+      dispatch(closeModal());
+    } catch (error: any) {
+      dispatch(setFormError(error.response.data.error));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [email, password]);
+
   return (
     <Modal
       onClose={() => {
@@ -19,6 +46,7 @@ const Register = () => {
       className="sign-in"
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {formError && <p className="text-red-500">{formError}</p>}
         <Input
           placeholder="Name"
           value={name}
@@ -42,10 +70,11 @@ const Register = () => {
           }}
         />
         <button
+          onClick={handleSignup}
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Register
+          {!isLoading ? "Register" : "Processing..."}
         </button>
         <pre
           className="cursor-pointer text-blue-500"

@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { openModal } from "../redux/uiSlice";
 import Register from "./Register";
+import { clearAuth } from "../redux/authSlice";
 
 const Navbar: React.FC = () => {
   const { isModalOpen, modalType } = useSelector(
     (state: RootState) => state.ui
   );
+
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   return (
     <>
@@ -22,25 +25,43 @@ const Navbar: React.FC = () => {
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4 text-white">
                   {/* Your navigation links */}
-                  <div
-                    onClick={() => {
-                      dispatch(openModal("login"));
-                    }}
-                  >
-                    Sign In
-                  </div>
-                  <div
-                    onClick={() => {
-                      dispatch(openModal("register"));
-                    }}
-                  >
-                    Register
-                  </div>
+                  {!isAuthenticated && (
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => {
+                        dispatch(openModal("login"));
+                      }}
+                    >
+                      Sign In
+                    </div>
+                  )}
+                  {!isAuthenticated && (
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => {
+                        dispatch(openModal("register"));
+                      }}
+                    >
+                      Register
+                    </div>
+                  )}
+
+                  {isAuthenticated && (
+                    <div className="cursor-pointer">Dashboard</div>
+                  )}
+
+                  {isAuthenticated && (
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => {
+                        dispatch(clearAuth());
+                      }}
+                    >
+                      Logout
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-            <div className="hidden md:block">
-              {/* Additional actions or buttons */}
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ const Modal: React.FC<ModalProps> = ({ children, className, onClose }) => {
       }`}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-lg relative"
+        className={`bg-white p-12 rounded-lg shadow-lg relative`}
         style={{
           boxShadow:
             "0 0 10px rgba(0, 0, 255, 0.2), 0 0 20px rgba(0, 0, 255, 0.1)",
