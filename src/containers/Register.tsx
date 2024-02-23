@@ -13,6 +13,7 @@ import {
 import { ChangeEvent, useCallback } from "react";
 import { register } from "../services/HttpsService";
 import { setAuthToken, setAuthenticatedEmail } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Intentionally left out ui validations, validations are done in SignIn.
@@ -20,6 +21,7 @@ import { setAuthToken, setAuthenticatedEmail } from "../redux/authSlice";
 
 const Register = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { email, password, name, formError, isLoading } = useSelector(
     (state: RootState) => state.form
   );
@@ -31,6 +33,7 @@ const Register = () => {
       dispatch(setAuthenticatedEmail(email));
       dispatch(setAuthToken(data.token));
       dispatch(closeModal());
+      navigate("/dashboard");
     } catch (error: any) {
       dispatch(setFormError(error.response.data.error));
     } finally {

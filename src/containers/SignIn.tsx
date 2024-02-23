@@ -12,9 +12,11 @@ import {
 import { ChangeEvent, useCallback } from "react";
 import { signIn } from "../services/HttpsService";
 import { setAuthToken, setAuthenticatedEmail } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { email, password, formError, isLoading } = useSelector(
     (state: RootState) => state.form
   );
@@ -26,6 +28,7 @@ const SignIn = () => {
       dispatch(setAuthenticatedEmail(email));
       dispatch(setAuthToken(data.token));
       dispatch(closeModal());
+      navigate("/dashboard");
     } catch (error: any) {
       dispatch(setFormError(error.response.data.error));
     } finally {
@@ -64,7 +67,7 @@ const SignIn = () => {
         <button
           onClick={handleSignIn}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
-          disabled={!email || !password}
+          disabled={!email || !password || isLoading}
         >
           {isLoading ? "Signing in..." : "Sign In"}
         </button>
