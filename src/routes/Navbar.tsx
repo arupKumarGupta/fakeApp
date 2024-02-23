@@ -1,10 +1,11 @@
 import React from "react";
-import SignIn from "./SignIn";
+import SignIn from "../containers/SignIn";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { openModal } from "../redux/uiSlice";
-import Register from "./Register";
+import Register from "../containers/Register";
 import { clearAuth } from "../redux/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const { isModalOpen, modalType } = useSelector(
@@ -13,6 +14,7 @@ const Navbar: React.FC = () => {
 
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <>
       <nav className="bg-gray-800">
@@ -25,6 +27,9 @@ const Navbar: React.FC = () => {
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4 text-white">
                   {/* Your navigation links */}
+                  <div className="cursor-pointer">
+                    <Link to={"/"}>Home</Link>
+                  </div>
                   {!isAuthenticated && (
                     <div
                       className="cursor-pointer"
@@ -47,7 +52,9 @@ const Navbar: React.FC = () => {
                   )}
 
                   {isAuthenticated && (
-                    <div className="cursor-pointer">Dashboard</div>
+                    <div className="cursor-pointer">
+                      <Link to={"/dashboard"}>Dashboard</Link>
+                    </div>
                   )}
 
                   {isAuthenticated && (
@@ -55,6 +62,7 @@ const Navbar: React.FC = () => {
                       className="cursor-pointer"
                       onClick={() => {
                         dispatch(clearAuth());
+                        navigate("/");
                       }}
                     >
                       Logout
